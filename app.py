@@ -6,32 +6,50 @@ app = Flask(__name__)
 @app.route('/', methods=['GET','POST'])
 def index():
     from random import randint
-    r = randint(0,255)
-    g = randint(0,255)
-    b = randint(0,255)
-
-    return render_template('index.html', red=r, green=g, blue=b)
-
-@app.route('/answer', methods=['GET','POST'])
-def answer():
+    from sqlalchemy import create_engine
     import pandas as pd
-    answer = request.form.get('answer')
-    
-    red = request.form.get('red')
-    green = request.form.get('green')
-    blue = request.form.get('blue')
-    
-    df2 = pd.DataFrame({
-        'Red': red,
-        'Green': green,
-        'Blue': blue,
-        'Foreground': answer
-    }, index=[0], columns=['Red','Green','Blue','Foreground'])
+    import numpy as np
+    from sklearn.neighbors import KNeighborsClassifier
 
-    df2.to_csv('colors.csv', mode='a', header=False, index=None)
-   
-    # return render_template('test.html', df=df)
-    return redirect('/')
+    red_train = randint(0,255)
+    green_train = randint(0,255)
+    blue_train = randint(0,255)
+
+    # Predicting data
+    engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
+    conn = engine.connect()
+    sql_query = "SELECT * from colors"
+    result = conn.execute(sql_query)
+    rows = result.fetchall()
+    if len(rows) > 10:
+        df = pd.DataFrame(rows, columns=['red','green','blue','foreground'])
+        model = KNeighborsClassifier(n_neighbors=3, n_jobs=1)
+        model.fit(df[['red','green','blue']], df[['foreground']])
+
+        df2 = pd.DataFrame({
+            'red': red_train,
+            'green': green_train,
+            'blue': blue_train,
+        }, index=[0], columns=['red','green','blue'])
+
+        pred = model.predict(df2[['red','green','blue']])
+    conn.close()
+
+    # Inserting into dataset
+    answer = request.form.get('answer')
+    if answer is not None:
+        red = request.form.get('red')
+        green = request.form.get('green')
+        blue = request.form.get('blue')
+        
+        engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
+        conn = engine.connect()
+        sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
+        conn.execute(sql_query)
+        conn.close()
+
+
+    return render_template('index.html', red=red_train, green=green_train, blue=blue_train, pred=pred, test = len(rows))
 
 if __name__=='__main__':
     port = int(os.environ.get('PORT', 5000))

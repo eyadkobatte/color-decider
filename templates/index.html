@@ -54,44 +54,57 @@
     </style>
 </head>
 <body>
-    <form action="/answer" method="post">
-
-        <input type="hidden" name="red" value="{{red}}">
-        <input type="hidden" name="green" value="{{green}}">
-        <input type="hidden" name="blue" value="{{blue}}">
-
-        <div class="container">
-
-            <div id="container1" class="col-xs-12 col-md-6">
-                <div id="background1">
-                    <div id="foreground1">
-                        Sample Text Comes Here
-                    </div>
+    <div class="container">
+        <div id="container1" class="col-xs-12 col-md-6">
+            <div id="background1">
+                <div id="foreground1">
+                    Sample Text Comes Here
                 </div>
-
-                <br>
-                <input type="submit" value="White" name="answer">
             </div>
 
-            <div id="container2" class="col-xs-12 col-md-6">
-                <div id="background2">
-                    <div id="foreground2">
-                        Sample Text Comes Here
-                    </div>
-                </div>
-                
-                <br>
-                <input type="submit" value="Black" name="answer">
-            </div>        
+            <br>
+            <form action="/" method="post">
+                <input type="hidden" name="red" value="{{red}}">
+                <input type="hidden" name="green" value="{{green}}">
+                <input type="hidden" name="blue" value="{{blue}}">
 
-        </div>
+                <input type="hidden" name="answer" value="white">
+                <input type="submit" value="White">
+                {% if pred == 'white' %}
+                    {{ 'Predicted this color' }}
+                {% endif %}
+            </form>
             
-        Red: {{red}}
-        <br>
-        Green: {{green}}
-        <br>
-        Blue: {{blue}}
+        </div>
 
-    </form>
+        <div id="container2" class="col-xs-12 col-md-6">
+            <div id="background2">
+                <div id="foreground2">
+                    Sample Text Comes Here
+                </div>
+            </div>
+            
+            <br>
+            <form action="/" method="post">
+                <input type="hidden" name="red" value="{{red}}">
+                <input type="hidden" name="green" value="{{green}}">
+                <input type="hidden" name="blue" value="{{blue}}">
+
+                <input type="hidden" name="answer" value="black">
+                <input type="submit" value="Black">
+                {% if pred == 'black' %}
+                    {{ 'Predicted this color' }}
+                {% endif %}
+            </form>
+        </div>        
+
+    </div>
+        
+    Red: {{red}}
+    <br>
+    Green: {{green}}
+    <br>
+    Blue: {{blue}}
+
 </body>
 </html>
