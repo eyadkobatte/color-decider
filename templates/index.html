@@ -11,100 +11,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     
-    <style>
-        #container1 {
-            display: inline-block;
-            max-width: 49%;
-        }
-        #container2 {
-            display: inline-block;
-            max-width: 49%;
-        }
-        #background1 {
-            background: rgb({{red}}, {{green}}, {{blue}});
-            width: 300px;
-            height: 300px;
-            margin: 0 auto;
-            display: inline-block;
-        }
-        #foreground1 {
-            color: #FFFFFF;
-            padding-top: 140px;
-            padding-left: 50px;
-            vertical-align: center;
-            display: inline-block;
-        }
+    <link rel="stylesheet" href="{{url_for('static', filename='open-iconic-bootstrap.css')}}"/>
 
-        #background2 {
-            background: rgb({{red}}, {{green}}, {{blue}});
-            width: 300px;
-            height: 300px;
-            margin: 0 auto;
-            display: inline-block;
-        }
-        #foreground2 {
-            display: inline-block;
-            color: #000000;
-            text-align: center;
-            padding-left: 50px;
-            padding-top: 140px;
-            vertical-align: center;
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+
+    <style>
+        #block-1 {
         }
         
+        #block-2 {
+        }
+
+        #background1, #background2 {
+            margin: 10px 0px;
+            height: 200px;
+            text-align: center;
+            background: rgb({{red}}, {{green}}, {{blue}});
+        }
+        p {
+            display: inline;
+        }
+        #foreground1 {
+            color: white;
+            position: relative;
+            top: 45%;
+            transform: translateY(-50%);
+        }
+        #foreground2 {
+            color:black;
+            position: relative;
+            top: 45%;
+            transform: translateY(-50%);
+        }
+        #white_check {
+            color: rgb(255, 255, 255);
+            margin: auto;
+            width: 50%;
+            position: relative;
+            top: 80%;
+            transform: translateY(-50%);
+        }
+        #black_check {
+            color: rgb(0, 0, 0);
+            margin: auto;
+            width: 50%;
+            position: relative;
+            top: 80%;
+            transform: translateY(-50%);
+        }
+        div h2 {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+    <!-- Main Container -->
     <div class="container">
-        <div id="container1" class="col-xs-12 col-md-6">
-            <div id="background1">
-                <div id="foreground1">
-                    Sample Text Comes Here
-                </div>
-            </div>
-
-            <br>
-            <form action="/" method="post">
-                <input type="hidden" name="red" value="{{red}}">
-                <input type="hidden" name="green" value="{{green}}">
-                <input type="hidden" name="blue" value="{{blue}}">
-
-                <input type="hidden" name="answer" value="white">
-                <input type="submit" value="White">
-                {% if pred == 'white' %}
-                    {{ 'Predicted this color' }}
-                {% endif %}
-            </form>
-            
+        <div class="col-md-10 offset-md-1">
+            <h2>Color Predictor</h2>
         </div>
-
-        <div id="container2" class="col-xs-12 col-md-6">
-            <div id="background2">
-                <div id="foreground2">
-                    Sample Text Comes Here
-                </div>
+        <br>
+        <div class="row">
+            <!-- 1st Block -->
+            <div class="col-md-4 offset-md-1 col-xs-10 offset-xs-1" id="block-1">
+                <form action="/" method="post">
+                    <div id="background1" onclick="javascript:this.parentNode.submit();">
+                        <p id="foreground1">Sample Text Comes Here</p>
+                        {% if pred == 'white' %}
+                            <i class="material-icons" id="white_check">check</i>
+                        {% endif %}
+                    </div>
+                    <input type="hidden" name="red" value="{{red}}">
+                    <input type="hidden" name="green" value="{{green}}">
+                    <input type="hidden" name="blue" value="{{blue}}">
+                    <input type="hidden" name="answer" value="white">
+    
+                </form>
             </div>
-            
-            <br>
-            <form action="/" method="post">
-                <input type="hidden" name="red" value="{{red}}">
-                <input type="hidden" name="green" value="{{green}}">
-                <input type="hidden" name="blue" value="{{blue}}">
 
-                <input type="hidden" name="answer" value="black">
-                <input type="submit" value="Black">
-                {% if pred == 'black' %}
-                    {{ 'Predicted this color' }}
-                {% endif %}
-            </form>
-        </div>        
-
+            <!-- 2nd Block -->
+            <div class="col-md-4 offset-md-2 col-xs-10 offset-xs-1" id="block-2">
+                <form action="/" method="post">
+                    <div id="background2" onclick="javascript:this.parentNode.submit();">
+                        <p id="foreground2">Sample Text Comes Here</p>
+                        {% if pred == 'black' %}
+                            <i class="material-icons" id="black_check">check</i>
+                        {% endif %}
+                    </div>
+                    <input type="hidden" name="red" value="{{red}}">
+                    <input type="hidden" name="green" value="{{green}}">
+                    <input type="hidden" name="blue" value="{{blue}}">
+    
+                    <input type="hidden" name="answer" value="black">
+                </form>
+            </div>
+        </div>
     </div>
-        
-    Red: {{red}}
-    <br>
-    Green: {{green}}
-    <br>
-    Blue: {{blue}}
 
 </body>
 </html>
