@@ -9,6 +9,7 @@ pandas = "*"
 sqlalchemy = "*"
 scikit-learn = "*"
 scipy = "*"
+"psycopg2" = "*"
 
 [dev-packages]
 
