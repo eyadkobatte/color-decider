@@ -18,6 +18,8 @@ def index():
     green_train = randint(0,255)
     blue_train = randint(0,255)
 
+    pred = None
+
     # Predicting data
 
     # Connecting to Postgres
