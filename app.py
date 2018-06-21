@@ -10,16 +10,42 @@ def index():
     from sqlalchemy import create_engine
     from sklearn.neighbors import KNeighborsClassifier
 
+    import psycopg2
+    import urllib.parse as urlparse
+
+
     red_train = randint(0,255)
     green_train = randint(0,255)
     blue_train = randint(0,255)
 
     # Predicting data
-    engine = create_engine("postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor")
-    conn = engine.connect()
-    sql_query = "SELECT * from colors"
-    result = conn.execute(sql_query)
-    rows = result.fetchall()
+
+    # Connecting to Postgres
+    # engine = create_engine("postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor")
+    # conn = engine.connect()
+
+
+    url = urlparse.urlparse(os.environ['DATABASE_URL'])
+    dbname = url.path[1:]
+    user = url.username
+    password = url.password
+    host = url.hostname
+    port = url.port
+
+    conn = psycopg2.connect(
+                dbname=dbname,
+                user=user,
+                password=password,
+                host=host,
+                port=port
+                )
+    cur = conn.cursor()
+    cur.execute("SELECT * from colors")
+    rows = cur.fetchall()
+
+    # sql_query = "SELECT * from colors"
+    # result = conn.execute(sql_query)
+    # rows = result.fetchall()
     if len(rows) > 10:
         df = pd.DataFrame(rows, columns=['red','green','blue','foreground'])
         model = KNeighborsClassifier(n_neighbors=3, n_jobs=1)
