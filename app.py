@@ -5,10 +5,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST'])
 def index():
+    import pandas as pd
     from random import randint
     from sqlalchemy import create_engine
-    import pandas as pd
-    import numpy as np
     from sklearn.neighbors import KNeighborsClassifier
 
     red_train = randint(0,255)
@@ -16,7 +15,7 @@ def index():
     blue_train = randint(0,255)
 
     # Predicting data
-    engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
+    engine = create_engine("postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor")
     conn = engine.connect()
     sql_query = "SELECT * from colors"
     result = conn.execute(sql_query)
@@ -49,7 +48,7 @@ def index():
         conn.close()
 
 
-    return render_template('index.html', red=red_train, green=green_train, blue=blue_train, pred=pred, test = len(rows))
+    return render_template('index.html', red=red_train, green=green_train, blue=blue_train, backgroundColor=f'rgb({red_train}, {green_train}, {blue_train})', pred=pred, test = len(rows))
 
 if __name__=='__main__':
     port = int(os.environ.get('PORT', 5000))
