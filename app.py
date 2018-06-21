@@ -83,7 +83,8 @@ def index():
                 port=port
                 )
         cur = conn.cursor()
-        cur.execute('INSERT INTO colors VALUES("+red+", "+green+", "+blue+", "+answer+"')
+        sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
+        cur.execute(sql_query)
         conn.close()
 
     return render_template('index.html', red=red_train, green=green_train, blue=blue_train, backgroundColor=f'rgb({red_train}, {green_train}, {blue_train})', pred=pred, test = len(rows))
