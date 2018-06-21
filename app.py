@@ -69,12 +69,22 @@ def index():
         green = request.form.get('green')
         blue = request.form.get('blue')
         
-        engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
-        conn = engine.connect()
-        sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
-        conn.execute(sql_query)
-        conn.close()
+        # engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
+        # conn = engine.connect()
+        # sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
+        # conn.execute(sql_query)
+        # conn.close()
 
+        conn = psycopg2.connect(
+                dbname=dbname,
+                user=user,
+                password=password,
+                host=host,
+                port=port
+                )
+        cur = conn.cursor()
+        cur.execute('INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')
+        conn.close()
 
     return render_template('index.html', red=red_train, green=green_train, blue=blue_train, backgroundColor=f'rgb({red_train}, {green_train}, {blue_train})', pred=pred, test = len(rows))
 
