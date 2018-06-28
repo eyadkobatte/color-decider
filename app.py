@@ -35,13 +35,14 @@ def index():
     port = url.port
 
     conn = psycopg2.connect(
-                dbname=dbname,
-                user=user,
-                password=password,
-                host=host,
-                port=port
-                )
+            dbname=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port
+            )
     cur = conn.cursor()
+    cur.execute('rollback')
     cur.execute("SELECT * from colors")
     rows = cur.fetchall()
 
@@ -60,7 +61,9 @@ def index():
         }, index=[0], columns=['red','green','blue'])
 
         pred = model.predict(df2[['red','green','blue']])
+
     conn.close()
+
 
     # Inserting into dataset
     answer = request.form.get('answer')
@@ -68,7 +71,7 @@ def index():
         red = request.form.get('red')
         green = request.form.get('green')
         blue = request.form.get('blue')
-        
+
         # engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/colors_predictor')
         # conn = engine.connect()
         # sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
@@ -82,11 +85,18 @@ def index():
                 host=host,
                 port=port
                 )
+        conn.autocommit=True
         cur = conn.cursor()
-        sql_query = "INSERT INTO colors VALUES("+red+", "+green+", "+blue+", '"+answer+"')"
-        cur.execute(sql_query)
+        try:
+            print('Entered into insert SQL block')
+            sql_query = f"INSERT INTO colors VALUES ({red}, {green}, {blue}, '{answer}')"
+            cur.execute(sql_query)
+            print(cur.statusmessage)
+        except:
+            print('Entered into except block')
+            cur.execute('rollback')
+        print('Closed Connection')
         conn.close()
-
     return render_template('index.html', red=red_train, green=green_train, blue=blue_train, backgroundColor=f'rgb({red_train}, {green_train}, {blue_train})', pred=pred, test = len(rows))
 
 if __name__=='__main__':
